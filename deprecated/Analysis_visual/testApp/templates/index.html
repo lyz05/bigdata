@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>数据可视化-Echarts</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}"/>
+</head>
+
+<body>
+<header>
+    <h1>{{ title }}</h1>
+    <div class="showTime">当前时间：2021年6月<span></span></div>
+</header>
+<section class="mainbox">
+    <div class="column">
+        <div class="panel bar">
+            <h2>
+                {{ chart1.title }}
+            </h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel line">
+            <h2>{{ chart2.title }}</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel pie">
+            <h2>{{ chart3.title }}</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+    </div>
+    {#   图表4     #}
+    <div class="column">
+        <div class="no">
+            <div class="no-hd">
+                <ul>
+                    {% for foo in httpchart %}
+                        <li>{{ foo.count }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="no-bd">
+                <ul>
+                    {% for foo in httpchart %}
+                        <li>{{ foo.scheme }}的访问量</li>
+{#                        <span></span>#}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="map">
+            <div class="chart"></div>
+            <div class="map1"></div>
+            <div class="map2"></div>
+            <div class="map3"></div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="panel bar1">
+            <h2>{{ chart4.title }}</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="monitor panel line1">
+            <div class="inner">
+                <h2>{{ chart5.title }}</h2>
+                <div class="tabs">
+{#                    <a href="javascript:;" data-index="0" class="active">IP访问总次数</a>#}
+{#                    <a href="javascript:;" data-index="1">IP访问总字节数</a>#}
+                </div>
+                <div class="content" style="display: block;">
+                    <div class="head">
+                        <span class="col">时间</span>
+                        <span class="col">访问次数</span>
+                        <span class="col">访问字节</span>
+                    </div>
+                    <div class="marquee-view">
+                        <div class="marquee">
+                            {% for flowItem in flowchart %}
+                                <div class="row">
+                                    <span class="col">{{ flowItem.year }}.{{ flowItem.month }}.{{ flowItem.day }}</span>
+                                    <span class="col">{{ flowItem.count }}</span>
+                                    <span class="col">{{ flowItem.sum }}</span>
+{#                                    <span class="icon-dot"></span>#}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer"></div>
+        </div>
+
+        <div class="panel pie1">
+            <h2>{{ chart8.title }}</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+    </div>
+</section>
+<script src="{% static 'js/jquery-2.2.3.min.js' %}"></script>
+<script src="{% static 'js/flexible.js' %}"></script>
+<script src="{% static 'js/echarts-4.2.1.min.js' %}"></script>
+<script src="{% static 'js/china.js' %}"></script>
+<script src="{% static 'js/myMap.js' %}"></script>
+<script src="{% static 'js/flow.js' %}"></script>
+<script>
+    (function (fn) {
+        fn();
+        setInterval(fn, 1000);
+    })(function () {
+        var dt = new Date();
+        document.querySelector(".showTime span").innerHTML =
+            dt.getDate() + "日-" +
+            dt.getHours() + "时" +
+            dt.getMinutes() + "分" +
+            dt.getSeconds() + "秒";
+    });
+</script>
+<script>
+    // 柱状图1模块
+    (function () {
+    var item = {
+        name:'',
+        value: 1200,
+        // 柱子颜色
+        itemStyle: {
+          color: '#254065'
+        },
+        // 鼠标经过柱子颜色
+        emphasis: {
+          itemStyle: {
+            color: '#254065'
+          }
+        },
+        // 工具提示隐藏
+        tooltip: {
+          extraCssText: 'opacity:0'
+        }
+      }
+    var option = {
+        tooltip: {
+            trigger: 'item',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'line'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            // 距离 上右下左 的距离
+            top: '6%',
+            right: '3%',
+            bottom: '3%',
+            left: '0%',
+            // 是否包含文本
+            containLabel: true,
+            // 显示边框
+            show: true,
+            // 边框颜色
+            borderColor: 'rgba(0, 240, 255, 0.3)'
+          },
+        xAxis: [
+            {
+                // 使用类目，必须有data属性
+                type: 'category',
+                // 使用 data 中的数据设为刻度文字
+                data:{{ chart1.as_field|safe }},
+                // 刻度设置
+                axisTick: {
+                  // true意思：图形在刻度中间
+                  // false意思：图形在刻度之间
+                  alignWithLabel: true,
+                  {#alignWithLabel: false,#}
+                  show: false
+                },
+               // 文字
+                axisLabel: {
+                  color: '#4c9bfd'
+                }
+              }
+        ],
+        yAxis: [
+            {
+                // 使用数据的值设为刻度文字
+                type: 'value',
+                // 刻度设置
+                axisTick: {
+                  show: false
+                },
+                // 文字
+                axisLabel: {
+                  color: '#4c9bfd'
+                },
+                splitLine: {
+                    lineStyle: {
+                    color: 'rgba(0, 240, 255, 0.3)'
+                    }
+                 }
+              }
+        ],
+        series: [
+            {
+                name: '直接访问',
+                type: 'bar',
+                barWidth: '60%',
+                data: {{ chart1.count|safe }},
+                itemStyle: {
+                    // 提供的工具函数生成渐变颜色
+                    color: new echarts.graphic.LinearGradient(
+                      // (x1,y2) 点到点 (x2,y2) 之间进行渐变
+                      0, 0, 0, 1,
+                      [
+                        {offset: 0, color: 'red'}, // 0 起始颜色
+                        {offset: 1, color: 'blue'}  // 1 结束颜色
+                      ]
+                    )
+                  }
+            }
+
+        ]
+    };
+
+     var myChart = echarts.init(document.querySelector(".bar .chart"));
+    myChart.setOption(option);
+        myChart.setOption(option);
+        window.addEventListener("resize", function () {
+            myChart.resize();
+    })
+})();
+
+
+    // 折线图定制
+    (function () {
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.querySelector(".line .chart"));
+        // 2. 指定配置和数据
+// Generate data
+// option
+        	option = {
+
+	    color: ['#00c2ff', '#f9cf67', '#e92b77'],
+	    legend: {
+	        show: true,
+	        {#// icon: 'circle',//图例形状#}
+	        bottom: 0,
+	        center: 0,
+	        itemWidth: 14, // 图例标记的图形宽度。[ default: 25 ]
+	        itemHeight: 14, // 图例标记的图形高度。[ default: 14 ]
+	        itemGap: 21, // 图例每项之间的间隔。[ default: 10 ]横向布局时为水平间隔，纵向布局时为纵向间隔。
+	        textStyle: {
+	            fontSize: 12,
+	            color: '#ade3ff'
+	        },
+	        data: ['2016', '2017', '2018'],
+	    },
+	    radar: [{
+
+	        indicator: [{
+	                text: {{ chart2.ip|safe }}[0],
+	                max: 12000
+	            },
+	            {
+	                text: {{ chart2.ip|safe }}[1],
+	                max: 13000
+	            },
+	            {
+	                text: {{ chart2.ip|safe }}[2],
+	                max: 10000
+	            },
+	            {
+	                text: {{ chart2.ip|safe }}[3],
+	                max: 15000
+	            },
+	            {
+	                text: {{ chart2.ip|safe }}[4],
+	                max: 15000
+	            },
+                {
+	                text: {{ chart2.ip|safe }}[5],
+	                max: 8000
+	            },
+	            {
+	                text: {{ chart2.ip|safe }}[6],
+	                max: 20000
+	            },
+	            {
+	                text: {{ chart2.ip|safe }}[7],
+	                max: 9000
+	            },
+	            {
+	                text: {{ chart2.ip|safe }}[8],
+	                max: 18000
+	            },
+	            {
+	                text: {{ chart2.ip|safe }}[9],
+	                max: 10000
+	            }
+	        ],
+
+	        textStyle: {
+	            color: 'red'
+	        },
+	        center: ['50%', '50%'],
+	        radius: 60,
+	        startAngle: 90,
+	        splitNumber: 3,
+	        orient: 'horizontal', // 图例列表的布局朝向,默认'horizontal'为横向,'vertical'为纵向.
+	        // shape: 'circle',
+	        // backgroundColor: {
+	        //     image:imgPath[0]
+	        // },
+	        name: {
+	            formatter: '{value}',
+	            textStyle: {
+	                fontSize: 12, //外圈标签字体大小
+	                color: '#5b81cb' //外圈标签字体颜色
+	            }
+	        },
+	        splitArea: { // 坐标轴在 grid 区域中的分隔区域，默认不显示。
+	            show: true,
+	            areaStyle: { // 分隔区域的样式设置。
+	                color: ['#141c42', '#141c42'], // 分隔区域颜色。分隔区域会按数组中颜色的顺序依次循环设置颜色。默认是一个深浅的间隔色。
+	            }
+	        },
+	        // axisLabel:{//展示刻度
+	        //     show: true
+	        // },
+	        axisLine: { //指向外圈文本的分隔线样式
+	            lineStyle: {
+	                color: '#153269'
+	            }
+	        },
+	        splitLine: {
+	            lineStyle: {
+	                color: '#113865', // 分隔线颜色
+	                width: 1, // 分隔线线宽
+	            }
+	        }
+	    }, ],
+	    series: [{
+	        name: '雷达图',
+	        type: 'radar',
+	        itemStyle: {
+	            emphasis: {
+	                lineStyle: {
+	                    width: 4
+	                }
+	            }
+	        },
+	        data: [{
+	            name: 'ip访问量',
+	            value: {{ chart2.count|safe }},
+	            areaStyle: {
+	                normal: { // 单项区域填充样式
+	                    color: {
+	                        type: 'linear',
+	                        x: 0, //右
+	                        y: 0, //下
+	                        x2: 1, //左
+	                        y2: 1, //上
+	                        colorStops: [{
+	                            offset: 0,
+	                            color: '#00c2ff'
+	                        }, {
+	                            offset: 0.5,
+	                            color: 'rgba(0,0,0,0)'
+	                        }, {
+	                            offset: 1,
+	                            color: '#00c2ff'
+	                        }],
+	                        globalCoord: true
+	                    },
+	                    opacity: 1 // 区域透明度
+	                }
+	            },
+	            symbolSize: 3.5, // 单个数据标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10。
+	             label: {                    // 单个拐点文本的样式设置
+	                    normal: {
+	                        show: true,             // 单个拐点文本的样式设置。[ default: false ]
+	                        position: 'top',        // 标签的位置。[ default: top ]
+	                        distance: 2,            // 距离图形元素的距离。当 position 为字符描述值（如 'top'、'insideRight'）时候有效。[ default: 5 ]
+	                        color: '#9ce2a4',          // 文字的颜色。如果设置为 'auto'，则为视觉映射得到的颜色，如系列色。[ default: "#fff" ]
+	                        fontSize: 8,           // 文字的字体大小
+	                        formatter:function(params) {
+	                            return params.value;
+	                        }
+	                    }
+	                },
+	            itemStyle: {
+	                normal: { //图形悬浮效果
+	                    borderColor: '#00c2ff',
+	                    borderWidth: 2.5
+	                }
+	            },
+	            // lineStyle: {
+	            //     normal: {
+	            //         opacity: 0.5// 图形透明度
+	            //     }
+	            // }
+	        },]
+	    }, ]
+	};
+        // 3. 把配置和数据给实例对象
+        myChart.setOption(option);
+
+        // 重新把配置好的新数据给实例对象
+        myChart.setOption(option);
+        window.addEventListener("resize", function () {
+            myChart.resize();
+        });
+    })();
+
+    // 饼形图定制
+    // 折线图定制
+    (function () {
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.querySelector(".pie .chart"));
+
+        option = {
+            tooltip: {
+                trigger: "item",
+                formatter: "{a} <br/>{b}: {c} ({d}%)",
+                position: function (p) {
+                    //其中p为当前鼠标的位置
+                    return [p[0] + 10, p[1] - 10];
+                }
+            },
+            legend: {
+                top: "90%",
+                itemWidth: 10,
+                itemHeight: 10,
+                data:[
+                    {name:{{ chart3.os|safe }}[0]},
+                    {name:{{ chart3.os|safe }}[1]},
+                    {name:{{ chart3.os|safe }}[2]},
+                    {name:{{ chart3.os|safe }}[3]},
+                    {name:{{ chart3.os|safe }}[4]}
+                ],
+                textStyle: {
+                    color: "rgba(255,255,255,.5)",
+                    fontSize: "12"
+                }
+            },
+            series: [
+                {
+                    name: '总访问量',
+                    type: "pie",
+                    center: ["50%", "48%"],
+                    radius: ["40%", "60%"],
+                    color: [
+                        "#aba107",
+                        '#22ab89',
+                        '#0463AB',
+                        '#a182ab',
+                        '#aba266',
+
+                    ],
+                    label: {show: true},
+                    labelLine: {show: true},
+                    data: [{value:{{chart3.count|safe}}[0],name:{{ chart3.os|safe }}[0]},
+                        {value:{{chart3.count|safe}}[1],name:{{ chart3.os|safe }}[1]},
+                        {value:{{chart3.count|safe}}[2],name:{{ chart3.os|safe }}[2]},
+                        {value:{{chart3.count|safe}}[3],name:{{ chart3.os|safe }}[3]},
+                        {value:{{chart3.count|safe}}[4],name:{{ chart3.os|safe }}[4]}
+                    ]
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        window.addEventListener("resize", function () {
+            myChart.resize();
+        });
+    })();
+    // 学习进度柱状图模块
+    (function () {
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.querySelector(".bar1 .chart"));
+
+        var data = [44, 25, 16, 8, 7];
+        var titlename = {{ chart4.http_method|safe }};
+        var valdata = {{ chart4.count|safe }};
+        var myColor = ["#1089E7", "#F57474", "#56D0E3", "#F8B448", "#8B78F6",];
+        option = {
+            //图标位置
+            grid: {
+                top: "10%",
+                left: "16%",
+                bottom: "10%"
+            },
+            xAxis: {
+                show: false
+            },
+            yAxis: [
+                {
+                    show: true,
+                    data: titlename,
+                    inverse: true,
+                    axisLine: {
+                        show: false
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        color: "#fff",
+
+                        rich: {
+                            lg: {
+                                backgroundColor: "#339911",
+                                color: "#fff",
+                                borderRadius: 15,
+                                // padding: 5,
+                                align: "center",
+                                width: 15,
+                                height: 15
+                            }
+                        }
+                    }
+                },
+                {
+                    show: true,
+                    inverse: true,
+                    data: valdata,
+                    axisLabel: {
+                        textStyle: {
+                            fontSize: 12,
+                            color: "#fff"
+                        }
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: "条",
+                    type: "bar",
+                    yAxisIndex: 0,
+                    data: data,
+                    barCategoryGap: 50,
+                    barWidth: 10,
+                    itemStyle: {
+                        normal: {
+                            barBorderRadius: 20,
+                            color: function (params) {
+                                var num = myColor.length;
+                                return myColor[params.dataIndex % num];
+                            }
+                        }
+                    },
+                    label: {
+                        normal: {
+                            show: true,
+                            position: "inside",
+                            formatter: "{c}%"
+                        }
+                    }
+                },
+                {
+                    name: "框",
+                    type: "bar",
+                    yAxisIndex: 1,
+                    barCategoryGap: 50,
+                    data: [100, 100, 100, 100, 100],
+                    barWidth: 15,
+                    itemStyle: {
+                        normal: {
+                            color: "none",
+                            borderColor: "#00c1de",
+                            borderWidth: 3,
+                            barBorderRadius: 15
+                        }
+                    }
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        window.addEventListener("resize", function () {
+            myChart.resize();
+        });
+    })();
+    // 折线图 优秀作品
+
+    // 点位分布统计模块
+    (function () {
+        // 1. 实例化对象
+        var myChart = echarts.init(document.querySelector(".pie1  .chart"));
+        // 2. 指定配置项和数据
+        var option = {
+            legend: {
+                top: "90%",
+                itemWidth: 10,
+                itemHeight: 10,
+                textStyle: {
+                    color: "rgba(255,255,255,.5)",
+                    fontSize: "12"
+                }
+            },
+            tooltip: {
+                trigger: "item",
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            // 注意颜色写的位置
+            color: [
+                "#006cff",
+                "#60cda0",
+                "#ed8884",
+                "#ff9f7f",
+                "#0096ff",
+                "#9fe6b8",
+                "#32c5e9",
+                "#1d9dff"
+            ],
+            series: [
+                {
+                    name: "点位统计",
+                    type: "pie",
+                    // 如果radius是百分比则必须加引号
+                    radius: ["15%", "60%"],
+                    center: ["50%", "51%"],
+                    roseType: "radius",
+                    data: [
+                        {value: {{ chart8.count|safe }}[0], name: {{chart8.status|safe}}[0]},
+                        {value: {{ chart8.count|safe }}[1], name: {{chart8.status|safe}}[1]},
+                        {value: {{ chart8.count|safe }}[2], name: {{chart8.status|safe}}[2]},
+                        {value: {{ chart8.count|safe }}[3], name: {{chart8.status|safe}}[3]},
+                        {value: {{ chart8.count|safe }}[4], name: {{chart8.status|safe}}[4]},
+                        {value: {{ chart8.count|safe }}[5], name: {{chart8.status|safe}}[5]},
+                        {value: {{ chart8.count|safe }}[6], name: {{chart8.status|safe}}[6]},
+                        {value: {{ chart8.count|safe }}[7], name: {{chart8.status|safe}}[7]}
+                    ],
+                    // 修饰饼形图文字相关的样式 label对象
+                    label: {
+                        fontSize: 10
+                    },
+                    // 修饰引导线样式
+                    labelLine: {
+                        // 连接到图形的线长度
+                        length: 10,
+                        // 连接到文字的线长度
+                        length2: 10
+                    }
+                }
+            ]
+        };
+
+        // 3. 配置项和数据给我们的实例化对象
+        myChart.setOption(option);
+        // 4. 当我们浏览器缩放的时候，图表也等比例缩放
+        window.addEventListener("resize", function () {
+            // 让我们的图表调用 resize这个方法
+            myChart.resize();
+        });
+    })();
+</script>
+</body>
+
+</html>

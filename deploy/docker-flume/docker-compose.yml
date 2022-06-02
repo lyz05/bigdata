@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  flume:
+    image: avastsoftware/flume-hdfs
+    container_name: flume
+    restart: always
+    volumes:
+      - ./flume/flume-file-arvo.conf:/opt/lib/flume/conf/flume-conf.properties
+      - hadoop_flume:/tmp/nginx-access-log
+    environment:
+      FLUME_AGENT_NAME: a3
+      LOG_FILE_PATH: /tmp/nginx-access-log/pypi.log
+
+
+  getlog:
+    build: ./getlog
+    container_name: getlog
+    volumes:
+      - hadoop_flume:/tmp/nginx-access-log
+    environment:
+      LOG_FILE_PATH: /tmp/nginx-access-log/pypi.log
+      LOG_URI: https://mirrors.tuna.tsinghua.edu.cn/logs/neomirrors/mirrors.log
+      
+volumes:
+  hadoop_flume:

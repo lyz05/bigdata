@@ -1,0 +1,4 @@
+Django==3.1.7
+django-simpleui==3.8
+PyMySQL==1.0.2
+smartchart==5.3.1

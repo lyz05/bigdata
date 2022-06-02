@@ -1,0 +1,26 @@
+version: '3'
+services:
+  grafana:
+    image: grafana/grafana-oss:latest
+    volumes:
+      - grafana:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    container_name: grafana
+
+  mysql:
+    image: mariadb:10.4.19
+    container_name: mysql
+    restart: always
+    volumes:
+      - bigdata_mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - ./initdb:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=qwertyuiop
+
+volumes:
+  bigdata_mysql:
+  grafana:

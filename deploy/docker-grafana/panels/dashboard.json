@@ -1,0 +1,483 @@
+{
+    "annotations": {
+        "list": [{
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "target": {
+                "limit": 100,
+                "matchAny": false,
+                "tags": [],
+                "type": "dashboard"
+            },
+            "type": "dashboard"
+        }]
+    },
+    "editable": false,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 1,
+    "links": [],
+    "liveNow": false,
+    "panels": [{
+            "description": "",
+            "gridPos": {
+                "h": 2,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 14,
+            "options": {
+                "content": "# <center>Nginx 访问日志数据可视化 </center>",
+                "mode": "markdown"
+            },
+            "pluginVersion": "8.4.2",
+            "targets": [{
+                "datasource": {
+                    "type": "mysql",
+                    "uid": "C8dKRRY7k"
+                },
+                "format": "time_series",
+                "group": [],
+                "metricColumn": "none",
+                "rawQuery": false,
+                "rawSql": "SELECT\n  last_login AS \"time\",\n  id\nFROM auth_user\nWHERE\n  $__timeFilter(last_login)\nORDER BY last_login",
+                "refId": "A",
+                "select": [
+                    [{
+                        "params": [
+                            "id"
+                        ],
+                        "type": "column"
+                    }]
+                ],
+                "table": "auth_user",
+                "timeColumn": "last_login",
+                "timeColumnType": "timestamp",
+                "where": [{
+                    "name": "$__timeFilter",
+                    "params": [],
+                    "type": "macro"
+                }]
+            }],
+            "type": "text"
+        },
+        {
+            "description": "柱状图",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [{
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 0,
+                "y": 2
+            },
+            "id": 10,
+            "options": {
+                "displayMode": "gradient",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showUnfilled": true
+            },
+            "pluginVersion": "8.4.2",
+            "targets": [{
+                "datasource": {
+                    "type": "mysql",
+                    "uid": "C8dKRRY7k"
+                },
+                "format": "time_series",
+                "group": [],
+                "metricColumn": "none",
+                "rawQuery": true,
+                "rawSql": "SELECT\r\n\tNOW() as time,\r\n\thttp_method as metric,\r\n\tcount as value\r\nFROM method",
+                "refId": "A",
+                "select": [
+                    [{
+                        "params": [
+                            "id"
+                        ],
+                        "type": "column"
+                    }]
+                ],
+                "table": "auth_user",
+                "timeColumn": "last_login",
+                "timeColumnType": "timestamp",
+                "where": [{
+                    "name": "$__timeFilter",
+                    "params": [],
+                    "type": "macro"
+                }]
+            }],
+            "title": "请求方法占比",
+            "type": "bargauge"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [{
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 6,
+                "y": 2
+            },
+            "id": 4,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.2",
+            "targets": [{
+                "datasource": {
+                    "type": "mysql",
+                    "uid": "C8dKRRY7k"
+                },
+                "format": "table",
+                "group": [],
+                "metricColumn": "count",
+                "rawQuery": true,
+                "rawSql": "SELECT\r\n  count\r\nFROM https\r\nwhere scheme='http'",
+                "refId": "A",
+                "select": [
+                    [{
+                        "params": [
+                            "id"
+                        ],
+                        "type": "column"
+                    }]
+                ],
+                "table": "ip",
+                "timeColumn": "id",
+                "timeColumnType": "int",
+                "where": [{
+                    "name": "$__unixEpochFilter",
+                    "params": [],
+                    "type": "macro"
+                }]
+            }],
+            "title": "http的访问量",
+            "type": "stat"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [{
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 7,
+                "x": 12,
+                "y": 2
+            },
+            "id": 6,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "8.4.2",
+            "targets": [{
+                "datasource": {
+                    "type": "mysql",
+                    "uid": "C8dKRRY7k"
+                },
+                "format": "table",
+                "group": [],
+                "metricColumn": "none",
+                "rawQuery": true,
+                "rawSql": "SELECT\r\n  count\r\nFROM https\r\nwhere scheme='https'",
+                "refId": "A",
+                "select": [
+                    [{
+                        "params": [
+                            "id"
+                        ],
+                        "type": "column"
+                    }]
+                ],
+                "table": "auth_user",
+                "timeColumn": "last_login",
+                "timeColumnType": "timestamp",
+                "where": [{
+                    "name": "$__timeFilter",
+                    "params": [],
+                    "type": "macro"
+                }]
+            }],
+            "title": "https的访问量",
+            "type": "stat"
+        },
+        {
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        }
+                    },
+                    "mappings": []
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 5,
+                "x": 19,
+                "y": 2
+            },
+            "id": 8,
+            "options": {
+                "displayLabels": [
+                    "name",
+                    "percent"
+                ],
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "right",
+                    "values": []
+                },
+                "pieType": "donut",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "8.4.2",
+            "targets": [{
+                "datasource": {
+                    "type": "mysql",
+                    "uid": "C8dKRRY7k"
+                },
+                "format": "time_series",
+                "group": [],
+                "hide": false,
+                "metricColumn": "status",
+                "rawQuery": true,
+                "rawSql": "SELECT\r\n\tNOW() as time,\r\n\tCONCAT(status,'') as metric,\r\n\tcount as value\r\nFROM status",
+                "refId": "A",
+                "select": [
+                    [{
+                        "params": [
+                            "count"
+                        ],
+                        "type": "column"
+                    }]
+                ],
+                "table": "status",
+                "timeColumn": "NOW()",
+                "timeColumnType": "timestamp",
+                "where": []
+            }],
+            "title": "请求状态占比",
+            "type": "piechart"
+        },
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": "auto",
+                        "displayMode": "auto"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [{
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": [{
+                        "matcher": {
+                            "id": "byName",
+                            "options": "用户"
+                        },
+                        "properties": [{
+                            "id": "custom.width",
+                            "value": 69
+                        }]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "时间"
+                        },
+                        "properties": [{
+                            "id": "custom.width",
+                            "value": 161
+                        }]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 24,
+                "x": 0,
+                "y": 9
+            },
+            "id": 2,
+            "options": {
+                "footer": {
+                    "fields": "",
+                    "reducer": [
+                        "sum"
+                    ],
+                    "show": false
+                },
+                "showHeader": true,
+                "sortBy": []
+            },
+            "pluginVersion": "8.4.2",
+            "targets": [{
+                "datasource": {
+                    "type": "mysql",
+                    "uid": "C8dKRRY7k"
+                },
+                "format": "table",
+                "group": [],
+                "metricColumn": "none",
+                "rawQuery": true,
+                "rawSql": "SELECT\r\n  ip as 'IP地址',\r\n  user as '用户',\r\n  time as '时间',\r\n  http_method as '请求方式',\r\n  http_path as '请求路径'\r\nFROM df",
+                "refId": "A",
+                "select": [
+                    [{
+                        "params": [
+                            "id"
+                        ],
+                        "type": "column"
+                    }]
+                ],
+                "table": "auth_user",
+                "timeColumn": "last_login",
+                "timeColumnType": "timestamp",
+                "where": [{
+                    "name": "$__timeFilter",
+                    "params": [],
+                    "type": "macro"
+                }]
+            }],
+            "title": "日志流数据",
+            "type": "table"
+        }
+    ],
+    "schemaVersion": 35,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+        "list": []
+    },
+    "time": {
+        "from": "now-6h",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Nginx访问日志 历史数据 仪表板",
+    "uid": "5JeAggY7k",
+    "version": 13,
+    "weekStart": ""
+}

@@ -1,0 +1,24 @@
+{% extends "echart/base.html" %}
+{% block head %}
+<style>
+.smt {text-align:center;vertical-align:middle}
+
+/*=============start_drag=============*/
+
+/*=============end_drag=============*/
+</style>
+{% endblock %}
+{% block body %}
+
+<body>
+<vue id="vue_app">
+    {% for div in div_list %}
+      {{div}}
+    {% endfor %}
+</vue>
+</body>
+
+{% endblock %}
+{% block javascript %}
+
+{% endblock %}

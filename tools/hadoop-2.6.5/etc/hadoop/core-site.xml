@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+<!-- 指定HDFS中NameNode的地址 -->
+ <property>  
+  <name>fs.defaultFS</name>  
+  <value>hdfs://hadoop100:9000</value>  
+ </property>  
+  <!--
+        在序列文件中使用的缓冲区大小，这个缓冲区的大小应该是页大小（英特尔x86上为4096）的倍数
+        他决定读写操作中缓冲了多少数据（单位kb）
+  -->
+ <property>  
+  <name>io.file.buffer.size</name>  
+  <value>131072</value>  
+ </property> 
+ <!-- 指定 hadoop 数据的存储目录 --> 
+ <property>  
+  <name>hadoop.tmp.dir</name>  
+  <value>file:/home/user/tools/hadoop-2.6.5/tmp</value>  
+  <description>Abasefor other temporary directories.</description>  
+ </property>
+ <property>
+  <name>hadoop.proxyuser.spark.hosts</name>  
+  <value>*</value>  
+ </property>
+<property>
+  <name>hadoop.proxyuser.spark.groups</name>  
+  <value>*</value>  
+ </property> 
+ <!-- 网页用户设置成user -->
+<property>
+<name>hadoop.http.staticuser.user</name>
+<value>user</value>
+</property>
+
+</configuration>
+

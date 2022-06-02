@@ -1,0 +1,31 @@
+version: "3.3"
+
+services:
+  web:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PASS=qwertyuiop
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mariadb:10.4.19
+    container_name: mysql
+    restart: always
+    volumes:
+      - bigdata_mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - ./initdb:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=qwertyuiop
+
+volumes:
+  bigdata_mysql:
